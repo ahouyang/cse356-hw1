@@ -1,0 +1,24 @@
+---
+- name: setup hw0
+  hosts: hw1
+  become: True
+  gather_facts: False
+  
+  pre_tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+  tasks:
+    - name: install apache
+      apt:
+        name: apache2
+        state: present
+    - name: clone hw0 repo
+      git:
+        repo: 'https://github.com/ahouyang/cse356-hw1.git'
+        dest: /home/ubuntu/cse356-hw1
+    - name: move hw0.html to apache root
+      copy: 
+        remote_src: yes
+        src: /home/ubuntu/cse356-hw1/html/hw0.html
+        dest: /var/www/html/
+
